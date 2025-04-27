@@ -11,8 +11,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
+import com.example.plana.navigation.CalendarScreenRoute
+import com.example.plana.navigation.TasksScreenRoute
+import com.example.plana.ui.screen.calendar.CalendarScreen
+import com.example.plana.ui.screen.tasks.TasksScreen
 import com.example.plana.ui.theme.PlanaTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,8 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PlanaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    MainNavigation(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +40,29 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+fun MainNavigation(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = CalendarScreenRoute
     )
-}
+    {
+        composable<CalendarScreenRoute> {
+            CalendarScreen(
+//                onMoneyAPISelected = {
+//                    navController.navigate(MoneyScreenRoute)
+//                },
+//                onNasaMarsAPISelected = {
+//                    navController.navigate(NasaScreenRoute)
+//                }
+            )
+        }
+        composable<TasksScreenRoute> {
+            TasksScreen()
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PlanaTheme {
-        Greeting("Android")
     }
 }
