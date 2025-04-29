@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "398954729676",
+    "project_id": "plana-4f021",
+    "storage_bucket": "plana-4f021.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398954729676:android:9a78e60828a85da2643269",
+        "android_client_info": {
+          "package_name": "com.example.plana"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP4Qx6rU-MD3gOEgr-XbnMGVlx75WqDe0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

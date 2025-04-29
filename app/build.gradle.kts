@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
-
 }
 
 android {
@@ -23,6 +22,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -46,6 +49,12 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("com.google.guava:guava:32.1.3-android")  // Force the specific version of Guava
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -56,6 +65,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,4 +89,25 @@ dependencies {
     implementation(libs.serialization.converter)
     implementation(libs.coil)
     kapt(libs.hilt.compiler)
+
+    // Version catalog not working very well
+    implementation(libs.google.oauth.client) {
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+    implementation(libs.google.api.services.calendar) {
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+    implementation(libs.play.services.auth) {
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+    implementation(libs.easy.permissions)
+
+    //to avoid conflicts in libraries
+    implementation(libs.guava)
+    implementation(libs.google.api.client.android) {
+        exclude(group = "org.apache.httpcomponents")
+        exclude(group = "com.google.guava", module = "guava-jdk5")
+    }
+
+
 }
