@@ -21,11 +21,19 @@ import com.example.plana.navigation.TasksScreenRoute
 import com.example.plana.ui.screen.calendar.CalendarScreen
 import com.example.plana.ui.screen.tasks.TasksScreen
 import com.example.plana.ui.theme.PlanaTheme
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.auth.FirebaseAuth
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FirebaseUIActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            createSignInIntent()
+            return
+        }
         enableEdgeToEdge()
         setContent {
             PlanaTheme {
@@ -37,7 +45,20 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+//    override fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+//        super.onSignInResult(result)
+//        val user = FirebaseAuth.getInstance().currentUser
+//        if (user != null) {
+//            // Re-launch content after successful sign-in
+////            setContent {
+////                ...
+////            }
+//        } else {
+//            // Show error or retry
+//        }
+//    }
 }
+
 
 @Composable
 fun MainNavigation(

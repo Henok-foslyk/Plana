@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "565038450490",
+    "project_id": "plana-99962",
+    "storage_bucket": "plana-99962.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565038450490:android:85530aa8948e1af8ee7203",
+        "android_client_info": {
+          "package_name": "com.example.plana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "565038450490-9hskmd0461f5m3v876dodc6s5d12t2v8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.plana",
+            "certificate_hash": "9027a2fac003e402c1a8767ceeaefb96b52236a2"
+          }
+        },
+        {
+          "client_id": "565038450490-vtq3hvg1ngemdha7sq74lv40puluebol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzIOS72gMefNLAWBJdJJF3xraNvabNeoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "565038450490-vtq3hvg1ngemdha7sq74lv40puluebol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
