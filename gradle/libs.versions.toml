@@ -23,13 +23,23 @@ firebaseUiAuthVersion="9.0.0"
 coil="2.1.0"
 firebase-bom="33.13.0"
 appcompat-version="1.7.0"
+googleApiClient="1.15.0"
+googleOauthClientJetty="1.34.1"
+googleApiServicesCalendar = "v3-rev20250115-2.0.0"
+credentialsVersion="1.5.0"
+googleIdentityVersion="1.1.1"
+playServicesVers="21.3.0"
 
 [libraries]
+g-api-client={module="com.google.api-client:google-api-client-android", version="1.35.0"}
+#google-api-client = { group = "com.google.api-client", name = "google-api-client", version.ref = "googleApiClient" }
+google-oauth-client-jetty = { group = "com.google.oauth-client", name = "google-oauth-client-jetty", version.ref = "googleOauthClientJetty" }
+google-api-services-calendar = { group = "com.google.apis", name = "google-api-services-calendar", version.ref = "googleApiServicesCalendar" }
 firebaseBom = {module="com.google.firebase:firebase-bom", version.ref="firebase-bom"}
 firebase-analytics = {module="com.google.firebase:firebase-analytics"}
 firebase-auth = {module="com.google.firebase:firebase-auth"}
 firebase-firestore = {module="com.google.firebase:firebase-firestore"}
-firebase-ui-auth = {module="com.firebaseui:firebase-ui-auth", version.ref="firebaseUiAuthVersion"}
+#firebase-ui-auth = {module="com.firebaseui:firebase-ui-auth", version.ref="firebaseUiAuthVersion"}
 kotlinx-serialization = {group="org.jetbrains.kotlinx", name="kotlinx-serialization-json", version.ref="kotlinxSerialization"}
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -44,7 +54,7 @@ hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", 
 retrofit = {group="com.squareup.retrofit2", name="retrofit", version.ref="retrofit"}
 serialization-converter = {group="com.jakewharton.retrofit", name="retrofit2-kotlinx-serialization-converter", version.ref="serializationConverter"}
 coil = {group="io.coil-kt", name="coil-compose", version.ref="coil"}
-
+play-services={module="com.google.android.gms:play-services-auth", version.ref="playServicesVers"}
 
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +71,9 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-credentials = {module="androidx.credentials:credentials", version.ref="credentialsVersion"}
+androidx-credentials-playservices= {module="androidx.credentials:credentials-play-services-auth", version.ref="credentialsVersion"}
+google-libraries-identity ={module="com.google.android.libraries.identity.googleid:googleid", version.ref="googleIdentityVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

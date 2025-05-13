@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -14,8 +16,21 @@ android {
     namespace = "com.example.plana"
     compileSdk = 35
 
+    packagingOptions {
+        pickFirsts += "META-INF/INDEX.LIST"
+        exclude("META-INF/DEPENDENCIES")
+        exclude("META-INF/LICENSE")
+        exclude("META-INF/LICENSE.txt")
+        exclude("META-INF/license.txt")
+        exclude("META-INF/NOTICE")
+        exclude("META-INF/NOTICE.txt")
+        exclude("META-INF/notice.txt")
+        exclude("META-INF/ASL2.0")
+        exclude("META-INF/*.kotlin_module")
+    }
+
     defaultConfig {
-        applicationId = "com.example.plana"
+        applicationId = "com.mvp.plana"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -64,7 +79,7 @@ dependencies {
     implementation(platform(libs.firebaseBom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.ui.auth)
+//    implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.navigation.runtime.ktx)
@@ -79,4 +94,19 @@ dependencies {
     implementation(libs.serialization.converter)
     implementation(libs.coil)
     kapt(libs.hilt.compiler)
+//    implementation(libs.google.api.client)
+//    {
+//        exclude("org.apache.httpcomponents")
+//    }
+    implementation(libs.google.oauth.client.jetty)
+    implementation(libs.google.api.services.calendar)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.playservices)
+    implementation(libs.google.libraries.identity)
+    implementation(libs.play.services)
+    implementation(libs.g.api.client) {
+        exclude("org.apache.httpcomponents")
+    }
+
+
 }

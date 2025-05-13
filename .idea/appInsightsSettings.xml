@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.plana" />
-                  <option name="mobileSdkAppId" value="1:565038450490:android:85530aa8948e1af8ee7203" />
-                  <option name="projectId" value="plana-99962" />
-                  <option name="projectNumber" value="565038450490" />
+                  <option name="appId" value="com.mvp.plana" />
+                  <option name="mobileSdkAppId" value="1:296323113102:android:6dede40f684542c178a9df" />
+                  <option name="projectId" value="plana-d7de1" />
+                  <option name="projectNumber" value="296323113102" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,30 +22,38 @@ import com.example.plana.navigation.TasksScreenRoute
 import com.example.plana.ui.screen.calendar.CalendarScreen
 import com.example.plana.ui.screen.tasks.TasksScreen
 import com.example.plana.ui.theme.PlanaTheme
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
-class MainActivity : FirebaseUIActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class MainActivity : GoogleSignInActivity(){
+    private var contentDrawn = false
 
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user == null) {
-            createSignInIntent()
+    override fun updateUI(user: FirebaseUser?) {
+        if (user == null) {                // signed‑out → do nothing for now
+            contentDrawn = false
             return
         }
+        if (contentDrawn) return           // already showing UI
+
+        contentDrawn = true
         enableEdgeToEdge()
+
         setContent {
             PlanaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainNavigation(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                    MainNavigation(Modifier.padding(innerPadding))
                 }
             }
         }
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+
 //    override fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
 //        super.onSignInResult(result)
 //        val user = FirebaseAuth.getInstance().currentUser
