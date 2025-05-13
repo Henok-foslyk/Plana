@@ -3,6 +3,7 @@ package com.example.plana
 
 
 import android.accounts.Account
+import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -83,22 +85,23 @@ open class GoogleSignInActivity : ComponentActivity() {
 
         try {
             val calendar: Calendar?
-            Log.d("email", "email $email")
+            val accountObj = GoogleSignIn.getLastSignedInAccount(this)?.account
+
             val credential = GoogleAccountCredential.usingOAuth2(
                 context,
                 arrayListOf(CalendarScopes.CALENDAR_READONLY),
-            ).apply {
-                backOff = ExponentialBackOff()            // optional
+            )
+                .setSelectedAccountName(email)
+                .setBackOff(ExponentialBackOff())
+
+
+            calendar =  withContext(Dispatchers.IO) {
+                CalendarUtil.getCalendarService(credential)
             }
 
-            credential.selectedAccountName = email;
-
-            Log.d("accounts", credential.googleAccountManager.accounts.last().name)
-
-            calendar = CalendarUtil.getCalendarService(credential)
-
-            val events = CalendarUtil.listUpcomingEvents(calendar)
-
+            val events = withContext(Dispatchers.IO){
+                CalendarUtil.listUpcomingEvents(calendar)
+            }
 
                 // Process and display the 'events' list in your UI
             Log.d("Calendar Util", "Successfully fetched ${events.size} upcoming events.")
@@ -125,6 +128,7 @@ open class GoogleSignInActivity : ComponentActivity() {
             // Your server's client ID, not your Android client ID.
             .setServerClientId("296323113102-80b4af7ar2hgc6q2rivu0rp6h8af00m2.apps.googleusercontent.com")
             // Only show accounts previously used to sign in.
+            .setAutoSelectEnabled(true)
             .setFilterByAuthorizedAccounts(true)
             .build()
 
@@ -144,6 +148,14 @@ open class GoogleSignInActivity : ComponentActivity() {
                 // Extract credential from the result returned by Credential Manager
                 handleSignIn(result.credential)
                 val email = GoogleIdTokenCredential.createFrom(result.credential.data).id
+//                val accounts = AccountManager.get(this@GoogleSignInActivity)
+//                    .getAccountsByType("com.google")
+//                val acc = accounts.firstOrNull { it.name.equals(email, ignoreCase = true) }
+//
+//                if (acc == null) {
+//                    Log.e(TAG, "No matching Google account on device; Calendar API will fail.")
+//                    return@launch
+//                }
                 listEvents(baseContext, email)
             } catch (e: GetCredentialException) {
                 Log.e(TAG, "Couldn't retrieve user's credentials: ${e.localizedMessage}")
