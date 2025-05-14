@@ -15,7 +15,11 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.Collections
 import com.example.plana.data.EventItem
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.temporal.TemporalAdjusters
 
 
 object CalendarUtil {
@@ -37,11 +41,18 @@ object CalendarUtil {
     @RequiresApi(Build.VERSION_CODES.O)
     @Throws(IOException::class)
     fun listUpcomingEvents(calendarService: Calendar?): List<EventItem> {
-        val now = DateTime(System.currentTimeMillis())
+//        val now = DateTime(System.currentTimeMillis())
+        val zone = ZoneId.systemDefault()
+        val startOfWeek = LocalDate.now(zone)
+            .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            .atStartOfDay(zone)
+
+        val weekStartDateTime = DateTime(startOfWeek.toInstant().toEpochMilli())
+
 
         val events: Events = calendarService!!.events().list("primary")
             .setMaxResults(EVENT_NUMBER)
-            .setTimeMin(now)
+            .setTimeMin(weekStartDateTime)
             .setOrderBy("startTime")
             .setSingleEvents(true)
             .execute()

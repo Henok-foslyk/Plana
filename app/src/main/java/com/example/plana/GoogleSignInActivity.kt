@@ -51,11 +51,12 @@ open class GoogleSignInActivity : ComponentActivity() {
     private lateinit var credentialManager: CredentialManager
     // [END declare_credential_manager]
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val consentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
             if (res.resultCode == Activity.RESULT_OK) {
                 lifecycleScope.launch {
-                    listEvents(this@GoogleSignInActivity, auth.currentUser?.email ?: return@launch)
+                    var events = listEvents(this@GoogleSignInActivity, auth.currentUser?.email ?: return@launch)
                 }
             } else {
                 Log.w(TAG, "User denied Calendar permission")
@@ -140,7 +141,7 @@ open class GoogleSignInActivity : ComponentActivity() {
             // Your server's client ID, not your Android client ID.
             .setServerClientId("296323113102-80b4af7ar2hgc6q2rivu0rp6h8af00m2.apps.googleusercontent.com")
             // Only show accounts previously used to sign in.
-            .setAutoSelectEnabled(true)
+            .setAutoSelectEnabled(false)
             .setFilterByAuthorizedAccounts(true)
             .build()
 

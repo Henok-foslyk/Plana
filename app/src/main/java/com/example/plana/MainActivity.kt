@@ -69,7 +69,7 @@ class MainActivity : GoogleSignInActivity(){
                 RequireContactsPermission(
                     onGranted = { context ->
                         lifecycleScope.launch {
-                            events = listEvents(context, "tanatswamanyakara638@gmail.com")
+                            events = user.email?.let { listEvents(context, it) }
                         }
                     }
                 )
