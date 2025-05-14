@@ -107,6 +107,10 @@ dependencies {
     implementation(libs.g.api.client) {
         exclude("org.apache.httpcomponents")
     }
+    implementation(libs.google.accompanist)
+    implementation(libs.google.http)
 
+    implementation(libs.composecalendar)
+    implementation(libs.kotlinx.datetime)
 
 }

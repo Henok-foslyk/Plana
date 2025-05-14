@@ -30,7 +30,12 @@ credentialsVersion="1.5.0"
 googleIdentityVersion="1.1.1"
 playServicesVers="21.3.0"
 
+composeCalendar = "1.4.0"
+kotlinxDatetime = "1.4.0"
+
 [libraries]
+kotlinx-datetime = { group = "io.github.boguszpawlowski.composecalendar", name = "kotlinx-datetime", version.ref = "kotlinxDatetime"}
+composecalendar = { group = "io.github.boguszpawlowski.composecalendar", name = "composecalendar", version.ref = "composeCalendar"}
 g-api-client={module="com.google.api-client:google-api-client-android", version="1.35.0"}
 #google-api-client = { group = "com.google.api-client", name = "google-api-client", version.ref = "googleApiClient" }
 google-oauth-client-jetty = { group = "com.google.oauth-client", name = "google-oauth-client-jetty", version.ref = "googleOauthClientJetty" }
@@ -74,6 +79,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-credentials = {module="androidx.credentials:credentials", version.ref="credentialsVersion"}
 androidx-credentials-playservices= {module="androidx.credentials:credentials-play-services-auth", version.ref="credentialsVersion"}
 google-libraries-identity ={module="com.google.android.libraries.identity.googleid:googleid", version.ref="googleIdentityVersion"}
+google-accompanist={module="com.google.accompanist:accompanist-permissions", version="0.37.3"}
+google-http={module="com.google.http-client:google-http-client-android", version="1.46.3"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

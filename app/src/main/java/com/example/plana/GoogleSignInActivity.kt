@@ -1,16 +1,14 @@
 package com.example.plana
 
 
-
-import android.accounts.Account
-import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
@@ -19,13 +17,11 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
@@ -34,12 +30,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.Firebase
-import com.google.firebase.auth.GoogleAuthCredential
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.io.InputStream
+import com.example.plana.data.EventItem
 import java.security.GeneralSecurityException
 
 /**
@@ -55,6 +50,17 @@ open class GoogleSignInActivity : ComponentActivity() {
     // [START declare_credential_manager]
     private lateinit var credentialManager: CredentialManager
     // [END declare_credential_manager]
+
+    private val consentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+            if (res.resultCode == Activity.RESULT_OK) {
+                lifecycleScope.launch {
+                    listEvents(this@GoogleSignInActivity, auth.currentUser?.email ?: return@launch)
+                }
+            } else {
+                Log.w(TAG, "User denied Calendar permission")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,11 +87,12 @@ open class GoogleSignInActivity : ComponentActivity() {
         updateUI(currentUser)
     }
     // [END on_start_check_user]
-    private suspend fun listEvents(context: Context, email: String) {
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    protected open suspend fun listEvents(context: Context, email: String): List<EventItem> {
+        var events: List<EventItem> = emptyList()
         try {
             val calendar: Calendar?
-            val accountObj = GoogleSignIn.getLastSignedInAccount(this)?.account
+
 
             val credential = GoogleAccountCredential.usingOAuth2(
                 context,
@@ -95,29 +102,34 @@ open class GoogleSignInActivity : ComponentActivity() {
                 .setBackOff(ExponentialBackOff())
 
 
-            calendar =  withContext(Dispatchers.IO) {
+            calendar =
                 CalendarUtil.getCalendarService(credential)
-            }
 
-            val events = withContext(Dispatchers.IO){
-                CalendarUtil.listUpcomingEvents(calendar)
+            Log.d("calendar", calendar.toString())
+
+            events = withContext(Dispatchers.IO) {           //  ← 💡 runs off‑main
+                CalendarUtil.listUpcomingEvents(calendar)        //  ← does network + getToken
             }
 
                 // Process and display the 'events' list in your UI
             Log.d("Calendar Util", "Successfully fetched ${events.size} upcoming events.")
-                // Example: update a TextView or RecyclerView
+            Log.d("EVENT", "$events")
 
-
-
-        }  catch (e: IOException) {
-            Log.e("Calendar", "Error accessing Calendar API: ${e.localizedMessage}")
+        }
+        catch (e: UserRecoverableAuthIOException) {
+            withContext(Dispatchers.Main) {
+                consentLauncher.launch(e.intent)   // ← just launch the intent
+            }
+        }
+        catch (e: IOException) {
+            Log.e("Calendar", "Error accessing Calendar API: ${e}")
             // Handle the error (e.g., show a message to the user)
         } catch (e: GeneralSecurityException) {
-            Log.e("Calendar", "Security error with Calendar API transport: ${e.localizedMessage}")
+            Log.e("Calendar", "Security error with Calendar API transport: ${e}")
             // Handle the error
         }
 
-
+        return events
 
     }
 
@@ -147,16 +159,8 @@ open class GoogleSignInActivity : ComponentActivity() {
                 )
                 // Extract credential from the result returned by Credential Manager
                 handleSignIn(result.credential)
-                val email = GoogleIdTokenCredential.createFrom(result.credential.data).id
-//                val accounts = AccountManager.get(this@GoogleSignInActivity)
-//                    .getAccountsByType("com.google")
-//                val acc = accounts.firstOrNull { it.name.equals(email, ignoreCase = true) }
-//
-//                if (acc == null) {
-//                    Log.e(TAG, "No matching Google account on device; Calendar API will fail.")
-//                    return@launch
-//                }
-                listEvents(baseContext, email)
+
+
             } catch (e: GetCredentialException) {
                 Log.e(TAG, "Couldn't retrieve user's credentials: ${e.localizedMessage}")
             }
